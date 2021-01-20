@@ -6,16 +6,16 @@
  * and open the template in the editor.
  */
 
-namespace Rot13;
+namespace RotatingEncryption;
 
 /**
- * Description of Rot13Encryption
+ * Description of RotatingEncryption
  *
  * @author thea
  */
-class Rot13Encryption {
+class RotatingEncryption {
 
-    protected $codePoints, $rot13;
+    protected $codePoints, $rotation;
 
     public function convertToAsciiUppercase($givenSentence) {
 
@@ -34,22 +34,21 @@ class Rot13Encryption {
     }
 
     public function performEncryption($codePoints, $encryptionOffset) {
-        $rot13 = array();
+        $rotation = array();
         $maxKey = max(array_keys($codePoints));
         for ($i = 0; $i <= $maxKey; $i++) {
             $codePoint = $codePoints[$i];
-            $rot13CodePoint = $this->rot13($codePoint, $encryptionOffset);
-            
-            array_push($rot13, $rot13CodePoint);
-        } return $rot13;
+            $rotatedCodePoint = $this->rotation($codePoint, $encryptionOffset);
+
+            array_push($rotation, $rotatedCodePoint);
+        } return $rotation;
     }
 
-    public function rot13($codePoint, $encryptionOffset) {
+    public function rotation($codePoint, $encryptionOffset) {
         if ($this->isCodePointALetter($codePoint)) {
             if (($codePoint + $encryptionOffset) > 90) {
-                
-                return 64 + $encryptionOffset - 90 + $codePoint;
 
+                return 64 + $encryptionOffset - 90 + $codePoint;
             } else {
                 return $codePoint + $encryptionOffset;
             }
@@ -57,8 +56,8 @@ class Rot13Encryption {
             return $codePoint;
         }
     }
-    
-        public function isCodePointALetter($codePoint) {
+
+    public function isCodePointALetter($codePoint) {
         if ($codePoint >= 65 && $codePoint <= 90) {
             return true;
         } else {
@@ -66,15 +65,14 @@ class Rot13Encryption {
         }
     }
 
-    public function convertToLetters($rot13) {
-        $rot13;
-        $rot13Result = "";
-        $maxKey = max(array_keys($rot13));
+    public function convertToLetters($rotatedNumbers) {
+        $rotatedResult = "";
+        $maxKey = max(array_keys($rotatedNumbers));
         for ($i = 0; $i <= $maxKey; $i++) {
-            $rot13Lletter = chr($rot13[$i]);            
-            $rot13Result .= $rot13Lletter;
+            $rotatedLletter = chr($rotatedNumbers[$i]);
+            $rotatedResult .= $rotatedLletter;
         }
-        return $rot13Result;
+        return $rotatedResult;
     }
 
 }
