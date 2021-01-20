@@ -49,6 +49,7 @@ class Rot13Encryption {
             if (($codePoint + $encryptionOffset) > 90) {
                 
                 return 64 + $encryptionOffset - 90 + $codePoint;
+
             } else {
                 return $codePoint + $encryptionOffset;
             }

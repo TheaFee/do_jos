@@ -10,7 +10,6 @@ class RomanToLatinNumbersConverter {
         $validNumber = $this->getValidNumber($roman);
         $latinNumbersArray = $this->switchToLatinNumbers($validNumber);
         $latinNumber = $this->calculate($latinNumbersArray);
-
         return $latinNumber;
     }
 
@@ -29,12 +28,15 @@ class RomanToLatinNumbersConverter {
         for ($i = 0, $j = strlen($roman); $i < $j; $i++) {
             $letter = substr($roman, $i, 1);
             $validLetter = $this->getValidRomanLetter($letter);
+
             $validNumber .= $validLetter;
         }
         return $validNumber;
     }
 
+
     public function getValidRomanLetter(string $letter) {
+
         $letterMatched = preg_match('/[MDCLXVI]/', $letter);
         if ($letterMatched) {
             return $letter;
