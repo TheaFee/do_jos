@@ -4,20 +4,19 @@ namespace Roman;
 
 class RomanToLatinNumbersConverter {
 
-    protected $latinNumbers;
+    protected $latinNumbersArray;
 
-    public function merge(string $roman) {
+    public function convertToLatinNumber(string $roman) {
         $validNumber = $this->getValidNumber($roman);
-        $latinNumbers = $this->switchToLatinNumbers($validNumber);
-        $validSemantic = $this->isSemanticValid($latinNumbers);
-        $latinNumber = $this->calculate($validSemantic, $latinNumbers);
+        $latinNumbersArray = $this->switchToLatinNumbers($validNumber);
+        $latinNumber = $this->calculate($latinNumbersArray);
 
         return $latinNumber;
     }
 
-    public function calculate(bool $validSemantic, array $latinNumbers) {
-
-        if ($validSemantic) {
+    public function calculate(array $latinNumbers) {
+        $isSemanticValid = $this->isSemanticValid($latinNumbers);
+        if ($isSemanticValid) {
             return $this->performSubstractionRule($latinNumbers);
         } else {
             echo "Ordentlich arbeiten!!! Schlag mal die Regeln für römische Zahlen nach!!!";
@@ -29,13 +28,13 @@ class RomanToLatinNumbersConverter {
         $validNumber = "";
         for ($i = 0, $j = strlen($roman); $i < $j; $i++) {
             $letter = substr($roman, $i, 1);
-            $validLetter = $this->validateRomanNumber($letter);
+            $validLetter = $this->getValidRomanLetter($letter);
             $validNumber .= $validLetter;
         }
         return $validNumber;
     }
 
-    public function validateRomanNumber(string $letter) {
+    public function getValidRomanLetter(string $letter) {
         $letterMatched = preg_match('/[MDCLXVI]/', $letter);
         if ($letterMatched) {
             return $letter;

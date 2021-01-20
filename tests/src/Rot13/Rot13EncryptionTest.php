@@ -71,6 +71,14 @@ class Rot13EncryptionTest extends TestCase {
 
         $this->assertSame($rot13CodePoint, $this->rot13Encryption->rot13($codePoint, $encryptionOffset));
     }
+    
+        public function testrot20_79() {
+        $codePoint = 33;
+        $encryptionOffset = 20;
+        $rotationCodePoint = 73;
+
+        $this->assertSame($rotationCodePoint, $this->rot13Encryption->rot13($codePoint, $encryptionOffset));
+    }
 
     public function testConvertToLetters() {
         $encryptedCodePoints = [85, 82, 89, 89, 66, 44, 32, 74, 66, 69, 89, 81, 33];

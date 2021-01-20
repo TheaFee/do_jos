@@ -47,7 +47,8 @@ class Rot13Encryption {
     public function rot13($codePoint, $encryptionOffset) {
         if ($this->isCodePointALetter($codePoint)) {
             if (($codePoint + $encryptionOffset) > 90) {
-                return $codePoint - $encryptionOffset;
+                
+                return 64 + $encryptionOffset - 90 + $codePoint;
             } else {
                 return $codePoint + $encryptionOffset;
             }

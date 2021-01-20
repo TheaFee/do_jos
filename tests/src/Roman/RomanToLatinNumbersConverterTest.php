@@ -19,25 +19,24 @@ final class RomanToLatinNumbersConverterTest extends TestCase {
     public function testMerge() {
         $romanNumberAsString = "CM.C DXCXLIXIV";
         $validRomanNumber = $this->numbersConverter->getValidNumber($romanNumberAsString);
-        $result = $this->numbersConverter->merge($romanNumberAsString);
+        $result = $this->numbersConverter->convertToLatinNumber($romanNumberAsString);
         $this->assertSame(1443, $result);
 
         echo "\n" . $validRomanNumber . " ist gleich " . $result;
     }
 
     public function testCalculate() {
-        $validSemantic = true;
         $latinNumbers = [100, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
         $result = 1443;
 
-        $this->assertSame($result, $this->numbersConverter->calculate($validSemantic, $latinNumbers));
+        $this->assertSame($result, $this->numbersConverter->calculate($latinNumbers));
     }
 
     public function testCalculate_Fail() {
         $validSemantic = false;
         $latinNumbers = [10, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
 
-        $this->assertFalse($this->numbersConverter->calculate($validSemantic, $latinNumbers));
+        $this->assertFalse($this->numbersConverter->calculate($latinNumbers));
     }
 
     public function testGetValidRomanNumber() {
@@ -48,13 +47,13 @@ final class RomanToLatinNumbersConverterTest extends TestCase {
     public function testValidateRomanNumber() {
         $letter = "C";
 
-        $this->assertSame("C", $this->numbersConverter->validateRomanNumber($letter));
+        $this->assertSame("C", $this->numbersConverter->getValidRomanLetter($letter));
     }
 
     public function testValidateRomanNumber_Null() {
         $letter = ".";
 
-        $this->assertNull($this->numbersConverter->validateRomanNumber($letter));
+        $this->assertNull($this->numbersConverter->getValidRomanLetter($letter));
     }
 
     public function testSwitchToLatinNumber() {
