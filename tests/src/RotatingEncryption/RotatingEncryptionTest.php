@@ -23,29 +23,37 @@ class RotatingEncryptionTest extends TestCase {
         $this->rotatingEncryption = new \RotatingEncryption\RotatingEncryption();
     }
 
+    public function testPerformRotEncryption() {
+        $decrypted = "Hello, World!";
+        $encryptionOffset = 13;
+        $encrypted = 'URYYB, JBEYQ!';
+        
+        $this->assertSame($encrypted, $this->rotatingEncryption->performRotEncryption($decrypted, $encryptionOffset));
+    }
+    
     public function convertToAsciiUppercase() {
-        $givenSentence = "Olé Garçon! Diese Süßspeise schmeckt gar nicht übel! *börp*";
+        $decrypted = "Olé Garçon! Diese Süßspeise schmeckt gar nicht übel! *börp*";
 
-        $convertedSentence = "OLE GARCON! DIESE SUESSSPEISE SCHMECKT GAR NICHT UEBEL! *BOERP*";
+        $decryptedInUppercase = "OLE GARCON! DIESE SUESSSPEISE SCHMECKT GAR NICHT UEBEL! *BOERP*";
 
-        $this->assertSame($convertedSentence, $this->rotatingEncryption->convertToAsciiUppercase($givenSentence));
+        $this->assertSame($decryptedInUppercase, $this->rotatingEncryption->convertToAsciiUppercase($decrypted));
     }
 
     public function testGetCodePoints() {
-        $sentenceInAscii = "HELLO, WORLD!";
+        $decryptedInUppercase = "HELLO, WORLD!";
 
-        $asciiCodePoints = [72, 69, 76, 76, 79, 44, 32, 87, 79, 82, 76, 68, 33];
+        $codePoints = [72, 69, 76, 76, 79, 44, 32, 87, 79, 82, 76, 68, 33];
 
-        $this->assertSame($asciiCodePoints, $this->rotatingEncryption->getCodePoints($sentenceInAscii));
+        $this->assertSame($codePoints, $this->rotatingEncryption->getCodePoints($decryptedInUppercase));
     }
 
     public function testPerformEncryption() {
         $codePoints = [72, 69, 76, 76, 79, 44, 32, 87, 79, 82, 76, 68, 33];
 
         $encryptionOffset = 13;
-        $encryptedCodePoints = [85, 82, 89, 89, 66, 44, 32, 74, 66, 69, 89, 81, 33];
+        $rotatedCodePoints = [85, 82, 89, 89, 66, 44, 32, 74, 66, 69, 89, 81, 33];
 
-        $this->assertSame($encryptedCodePoints, $this->rotatingEncryption->performEncryption($codePoints, $encryptionOffset));
+        $this->assertSame($rotatedCodePoints, $this->rotatingEncryption->performEncryption($codePoints, $encryptionOffset));
     }
 
     public function testrot13_72() {
@@ -93,10 +101,10 @@ class RotatingEncryptionTest extends TestCase {
     }
 
     public function testConvertToLetters() {
-        $encryptedCodePoints = [85, 82, 89, 89, 66, 44, 32, 74, 66, 69, 89, 81, 33];
-        $rotatedResult = 'URYYB, JBEYQ!';
+        $rotatedCodePoints = [85, 82, 89, 89, 66, 44, 32, 74, 66, 69, 89, 81, 33];
+        $encrypted = 'URYYB, JBEYQ!';
 
-        $this->assertSame($rotatedResult, $this->rotatingEncryption->convertToLetters($encryptedCodePoints));
+        $this->assertSame($encrypted, $this->rotatingEncryption->convertToLetters($rotatedCodePoints));
     }
 
 }

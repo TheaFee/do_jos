@@ -4,19 +4,19 @@ namespace Roman;
 
 class RomanToLatinNumbersConverter {
 
-    protected $latinNumbersArray;
+    private array $latinNumbersArray;
 
     public function convertToLatinNumber(string $roman) {
         $validNumber = $this->getValidNumber($roman);
-        $latinNumbersArray = $this->switchToLatinNumbers($validNumber);
-        $latinNumber = $this->calculate($latinNumbersArray);
+        $this->switchToLatinNumbers($validNumber);
+        $latinNumber = $this->calculate();
         return $latinNumber;
     }
 
-    public function calculate(array $latinNumbers) {
-        $isSemanticValid = $this->isSemanticValid($latinNumbers);
+    public function calculate() {
+        $isSemanticValid = $this->isSemanticValid();
         if ($isSemanticValid) {
-            return $this->performSubstractionRule($latinNumbers);
+            return $this->performSubstractionRule();
         } else {
             echo "Ordentlich arbeiten!!! Schlag mal die Regeln für römische Zahlen nach!!!";
             return false;
@@ -44,7 +44,6 @@ class RomanToLatinNumbersConverter {
     }
 
     public function switchToLatinNumbers(string $validNumber) {
-        $latinNumbers = array();
         for ($i = 0; $i < strlen($validNumber); $i++) {
             $letter = substr($validNumber, $i, 1);
             switch ($letter) {
@@ -70,16 +69,16 @@ class RomanToLatinNumbersConverter {
                     $latinNumber = 1000;
             }
 
-            array_push($latinNumbers, $latinNumber);
+            array_push($this->latinNumbersArray, $latinNumber);
         }
-        return $latinNumbers;
+
     }
 
-    public function isSemanticValid(array $latinNumbers) {
-        $amount = count($latinNumbers);
+    public function isSemanticValid() {
+        $amount = count($this->latinNumbersArray);
         for ($i = 0; $i < $amount; $i++) {
-            $firstNumber = $latinNumbers[$i];
-            $secondNumber = $latinNumbers[$i + 1];
+            $firstNumber = $this->latinNumbersArray[$i];
+            $secondNumber = $this->latinNumbersArray[$i + 1];
             switch ([$firstNumber, $secondNumber]):
                 case $firstNumber === 1 && ($secondNumber === 5 || $secondNumber === 10):
                     return true;
@@ -93,16 +92,16 @@ class RomanToLatinNumbersConverter {
         }
     }
 
-    public function performSubstractionRule(array $latinNumbers) {
-        $amount = count($latinNumbers);
+    public function performSubstractionRule() {
+        $amount = count($this->latinNumbersArray);
         $result = 0;
         for ($i = 0; $i < $amount; $i++) {
-            if ($i < $amount - 1 && $latinNumbers[$i] < $latinNumbers[$i + 1]) {
-                $intermediateResult = $latinNumbers[$i + 1] - $latinNumbers[$i];
+            if ($i < $amount - 1 && $this->latinNumbersArray[$i] < $this->latinNumbersArray[$i + 1]) {
+                $intermediateResult = $this->latinNumbersArray[$i + 1] - $this->latinNumbersArray[$i];
                 $result += $intermediateResult;
                 $i++;
             } else {
-                $result += $latinNumbers[$i];
+                $result += $this->latinNumbersArray[$i];
             }
         } return $result;
     }

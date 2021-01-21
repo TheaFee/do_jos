@@ -14,40 +14,46 @@ namespace RotatingEncryption;
  * @author thea
  */
 class RotatingEncryption {
-
-    protected $codePoints, $rotation;
-
-    public function convertToAsciiUppercase($givenSentence) {
-
-        $convertedSentence = iconv("UTF-8", "ASCII//TRANSLIT", $givenSentence);
-        return $sentenceInUppercase = strtoupper($convertedSentence);
+    
+    public function performRotEncryption(string $decrypted, int $encryptionOffset){
+       $decryptedInUppercase = $this->convertToAsciiUppercase($decrypted);
+       $codePoints = $this->getCodePoints($decryptedInUppercase);
+       $rotatedCodePoints = $this->performEncryption($codePoints, $encryptionOffset);
+       $encrypted = $this->convertToLetters($rotatedCodePoints);
+       
+       return $encrypted;
     }
 
-    public function getCodePoints($sentenceInAscii) {
+    public function convertToAsciiUppercase(string $decrypted) {
+
+        $convertedSentence = iconv("UTF-8", "ASCII//TRANSLIT", $decrypted);
+        return $decryptedInUppercase = strtoupper($convertedSentence);
+    }
+
+    public function getCodePoints($decryptedInUppercase) {
         $codePoints = array();
-        $numberOfChars = strlen($sentenceInAscii);
+        $numberOfChars = strlen($decryptedInUppercase);
         for ($i = 0; $i < $numberOfChars; $i++) {
-            $letter = substr($sentenceInAscii, $i, 1);
+            $letter = substr($decryptedInUppercase, $i, 1);
             $asciiNumber = ord($letter);
             array_push($codePoints, $asciiNumber);
         } return $codePoints;
     }
 
     public function performEncryption($codePoints, $encryptionOffset) {
-        $rotation = array();
+        $rotatedCodePoints = array();
         $maxKey = max(array_keys($codePoints));
         for ($i = 0; $i <= $maxKey; $i++) {
             $codePoint = $codePoints[$i];
             $rotatedCodePoint = $this->rotation($codePoint, $encryptionOffset);
 
-            array_push($rotation, $rotatedCodePoint);
-        } return $rotation;
+            array_push($rotatedCodePoints, $rotatedCodePoint);
+        } return $rotatedCodePoints;
     }
 
     public function rotation($codePoint, $encryptionOffset) {
         if ($this->isCodePointALetter($codePoint)) {
             if (($codePoint + $encryptionOffset) > 90) {
-
                 return 64 + $encryptionOffset - 90 + $codePoint;
             } else {
                 return $codePoint + $encryptionOffset;
@@ -65,14 +71,14 @@ class RotatingEncryption {
         }
     }
 
-    public function convertToLetters($rotatedNumbers) {
-        $rotatedResult = "";
-        $maxKey = max(array_keys($rotatedNumbers));
+    public function convertToLetters($rotatedCodePoints) {
+        $encrypted = "";
+        $maxKey = max(array_keys($rotatedCodePoints));
         for ($i = 0; $i <= $maxKey; $i++) {
-            $rotatedLletter = chr($rotatedNumbers[$i]);
-            $rotatedResult .= $rotatedLletter;
+            $rotatedLletter = chr($rotatedCodePoints[$i]);
+            $encrypted .= $rotatedLletter;
         }
-        return $rotatedResult;
+        return $encrypted;
     }
 
 }
