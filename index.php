@@ -8,4 +8,9 @@
 
 include('src/Roman/RomanToLatinNumbersConverter.php');
 include('src/Happy/HappyNumberCalculator.php');
-include('src/Rot13/Rot13Encryption.php');
+include('src/RotatingEncryption/RotatingEncryption.php');
+include('src/Bowling/GameInterface.php');
+include('src/Bowling/Game.php');
+include('src/Bowling/Frame.php');
+Bowling\Game::addRoll(4);
+Bowling\Game::addRoll(3);
