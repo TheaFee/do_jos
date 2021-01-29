@@ -18,7 +18,7 @@ interface GameInterface {
 
     public function getFrames();
 
-    public function calculateTotalScore();
+    public function getTotalScore();
 
     public function isGameOver();
 }

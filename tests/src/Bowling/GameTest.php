@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
  * @author thea
  */
 final class GameTest extends TestCase {
+    
+    private \Bowling\Game $bowlingGame;
 
     protected function setUp(): void {
         parent::setUp();
@@ -34,6 +36,89 @@ final class GameTest extends TestCase {
         $allFrames = $this->bowlingGame->getFrames();
         $pinsRolled = $allFrames[0]->getPinsRolled();
         $this->assertEquals($pins, $pinsRolled[0]);
+    }
+
+    public function testAddRoll_1Roll_Strike() {
+        $this->bowlingGame->addRoll(10);
+
+        $allFrames = $this->bowlingGame->getFrames();
+        $pinsRolled = $allFrames[0]->getPinsRolled();
+        $this->assertEquals(10, $pinsRolled[0]);
+    }
+
+    public function testGetFrames_2Rounds_1Strike() {
+        $this->bowlingGame->addRoll(10);
+        $this->bowlingGame->addRoll(5);
+        $this->bowlingGame->addRoll(2);
+
+        $frame1 = new \Bowling\Frame();
+        $frame1->setPinsRolled([10]);
+        $frame1->setScore(17);
+
+        $frame2 = new \Bowling\Frame();
+        $frame2->setPinsRolled([5, 2]);
+        $frame2->setScore(7);
+
+        $this->assertEquals([$frame1, $frame2], $this->bowlingGame->getFrames());
+    }
+
+    public function testGetFrames_3Rounds_3Strikes() {
+        $this->bowlingGame->addRoll(10);
+        $this->bowlingGame->addRoll(10);
+        $this->bowlingGame->addRoll(10);
+
+        $frame1 = new \Bowling\Frame();
+        $frame1->setPinsRolled([10]);
+        $frame1->setScore(30);
+
+        $frame2 = new \Bowling\Frame();
+        $frame2->setPinsRolled([10]);
+        $frame2->setScore(20);
+
+        $frame3 = new \Bowling\Frame();
+        $frame3->setPinsRolled([10]);
+        $frame3->setScore(10);
+
+        $this->assertEquals([$frame1, $frame2, $frame3], $this->bowlingGame->getFrames());
+    }
+
+    public function testGetFrames_2Rounds_1Spare() {
+        $this->bowlingGame->addRoll(5);
+        $this->bowlingGame->addRoll(5);
+        $this->bowlingGame->addRoll(2);
+        $this->bowlingGame->addRoll(2);
+
+        $frame1 = new \Bowling\Frame();
+        $frame1->setPinsRolled([5,5]);
+        $frame1->setScore(12);
+
+        $frame2 = new \Bowling\Frame();
+        $frame2->setPinsRolled([2, 2]);
+        $frame2->setScore(4);
+
+        $this->assertEquals([$frame1, $frame2], $this->bowlingGame->getFrames());
+    }
+
+    public function testGetFrames_3Rounds_1Strike_1Spare() {
+        $this->bowlingGame->addRoll(10);
+        $this->bowlingGame->addRoll(4);
+        $this->bowlingGame->addRoll(6);
+        $this->bowlingGame->addRoll(1);
+        $this->bowlingGame->addRoll(0);
+
+        $frame1 = new \Bowling\Frame();
+        $frame1->setPinsRolled([10]);
+        $frame1->setScore(20);
+
+        $frame2 = new \Bowling\Frame();
+        $frame2->setPinsRolled([4,6]);
+        $frame2->setScore(11);
+
+        $frame3 = new \Bowling\Frame();
+        $frame3->setPinsRolled([1,0]);
+        $frame3->setScore(1);
+
+        $this->assertEquals([$frame1, $frame2, $frame3], $this->bowlingGame->getFrames());
     }
 
     public function testAddRoll_2Rolls() {
@@ -121,38 +206,38 @@ final class GameTest extends TestCase {
 
         $totalScore = 22;
 
-        $this->assertEquals($totalScore, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals($totalScore, $this->bowlingGame->getTotalScore());
     }
 
     public function testGetTotalScore_AfterEveryFrame() {
         $this->bowlingGame->addRoll(4);
         $this->bowlingGame->addRoll(5);
-        $this->assertEquals(9, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(9, $this->bowlingGame->getTotalScore());
         $this->bowlingGame->addRoll(2);
         $this->bowlingGame->addRoll(3);
-        $this->assertEquals(14, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(14, $this->bowlingGame->getTotalScore());
         $this->bowlingGame->addRoll(1);
         $this->bowlingGame->addRoll(7);
 
-        $this->assertEquals(22, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(22, $this->bowlingGame->getTotalScore());
     }
 
     public function testGetTotalScore_AfterEveryRoll() {
         // when
         $this->bowlingGame->addRoll(4);
-        $this->assertEquals(4, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(4, $this->bowlingGame->getTotalScore());
         $this->bowlingGame->addRoll(5);
-        $this->assertEquals(9, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(9, $this->bowlingGame->getTotalScore());
         $this->bowlingGame->addRoll(2);
-        $this->assertEquals(11, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(11, $this->bowlingGame->getTotalScore());
         $this->bowlingGame->addRoll(3);
-        $this->assertEquals(14, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(14, $this->bowlingGame->getTotalScore());
         $this->bowlingGame->addRoll(1);
-        $this->assertEquals(15, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(15, $this->bowlingGame->getTotalScore());
         $this->bowlingGame->addRoll(7);
 
         // then
-        $this->assertEquals(22, $this->bowlingGame->calculateTotalScore());
+        $this->assertEquals(22, $this->bowlingGame->getTotalScore());
     }
 
     public function testIsGameOver_True() {
@@ -184,16 +269,54 @@ final class GameTest extends TestCase {
         //when then
         $this->assertFalse($mock->isGameOver());
     }
+    public function testIsGameOver_False_incompleteFrame() {
+        //given
+        $frame = new \Bowling\Frame();
+        $frame->setPinsRolled([4, 5]);
+        $frame->setScore(9);
+        
+        $incompleteFrame = new \Bowling\Frame();
+        $incompleteFrame->setPinsRolled([4]);
+        $incompleteFrame->setScore(4);
+        $allFrames = [$frame, $frame, $frame, $frame, $frame, $frame, $frame, $frame, $frame, $incompleteFrame];
+
+        $mock = new \Bowling\Game();
+        $allFramesMock = $this->getPrivateProperty($mock, 'allFrames');
+        $allFramesMock->setValue($mock, $allFrames);
+
+        //when then
+        $this->assertFalse($mock->isGameOver());
+    }
+    
+   
+        public function testIsGameOver_True_ThirdRollInLastFrame() {
+        //given
+        $frame = new \Bowling\Frame();
+        $frame->setPinsRolled([4, 5]);
+        $frame->setScore(9);
+        
+        $incompleteFrame = new \Bowling\Frame();
+        $incompleteFrame->setPinsRolled([10, 5, 5]);
+        $incompleteFrame->setScore(20);
+        $allFrames = [$frame, $frame, $frame, $frame, $frame, $frame, $frame, $frame, $frame, $incompleteFrame];
+
+        $mock = new \Bowling\Game();
+        $allFramesMock = $this->getPrivateProperty($mock, 'allFrames');
+        $allFramesMock->setValue($mock, $allFrames);
+
+        //when then
+        $this->assertTrue($mock->isGameOver());
+    }
 
     public function testCreateNewFrame() {
         //given
         $pins = 4;
-        
-        $previousFrame = new \Bowling\Frame();
-        $previousFrame->setPinsRolled([4, 5]);
-        $previousFrame->setScore(9);
 
-        $allFrames = [$previousFrame];
+        $lastFrame = new \Bowling\Frame();
+        $lastFrame->setPinsRolled([4, 5]);
+        $lastFrame->setScore(9);
+
+        $allFrames = [$lastFrame];
         $mock = new \Bowling\Game();
         $allFramesMock = $this->getPrivateProperty($mock, 'allFrames');
         $allFramesMock->setValue($mock, $allFrames);
@@ -207,26 +330,26 @@ final class GameTest extends TestCase {
         $result = $createNewFrameMock->invokeArgs($mock, [$pins]);
 
         //then
-        $expected = [$previousFrame, $currentFrame];
+        $expected = [$lastFrame, $currentFrame];
         $this->assertEquals($expected, $result);
     }
 
-    public function testUpdatePreviousFrame_2Roll() {
+    public function testUpdateLastFrame_2Roll() {
         //given
         $pins = 5;
-        
-        $previousFrame = new \Bowling\Frame();
-        $previousFrame->setPinsRolled([4]);
-        $previousFrame->setScore(4);
 
-        $allFrames = [$previousFrame];
+        $lastFrame = new \Bowling\Frame();
+        $lastFrame->setPinsRolled([4]);
+        $lastFrame->setScore(4);
+
+        $allFrames = [$lastFrame];
         $mock = new \Bowling\Game();
         $allFramesMock = $this->getPrivateProperty($mock, 'allFrames');
         $allFramesMock->setValue($mock, $allFrames);
 
         //when
-        $updatePreviousFrame = $this->getPrivateMethod($mock, 'updatePreviousFrame');
-        $result = $updatePreviousFrame->invokeArgs($mock, [$pins]);
+        $updateFrame = $this->getPrivateMethod($mock, 'updateFrame');
+        $result = $updateFrame->invokeArgs($mock, [$pins]);
 
         //then
         $updatedFrame = new \Bowling\Frame();
@@ -237,19 +360,19 @@ final class GameTest extends TestCase {
         $this->assertEquals($expected, $result);
     }
 
-    public function testUpdatePreviousFrame_1Roll() {
+    public function testUpdateLastFrame_1Roll() {
         //given
         $pins = 5;
-        
-        $previousFrame = new \Bowling\Frame();
-        $allFrames = [$previousFrame];
+
+        $lastFrame = new \Bowling\Frame();
+        $allFrames = [$lastFrame];
         $mock = new \Bowling\Game();
         $allFramesMock = $this->getPrivateProperty($mock, 'allFrames');
         $allFramesMock->setValue($mock, $allFrames);
 
         //when
-        $updatePreviousFrame = $this->getPrivateMethod($mock, 'updatePreviousFrame');
-        $result = $updatePreviousFrame->invokeArgs($mock, [$pins]);
+        $updateFrame = $this->getPrivateMethod($mock, 'updateFrame');
+        $result = $updateFrame->invokeArgs($mock, [$pins]);
 
         //then
         $updatedFrame = new \Bowling\Frame();
@@ -259,7 +382,7 @@ final class GameTest extends TestCase {
         $expected = [$updatedFrame];
         $this->assertEquals($expected, $result);
     }
-    
+
     private function getPrivateMethod($className, $methodName) {
         $reflector = new ReflectionClass($className);
         $method = $reflector->getMethod($methodName);
@@ -275,6 +398,5 @@ final class GameTest extends TestCase {
 
         return $property;
     }
-
 
 }

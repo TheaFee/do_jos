@@ -25,21 +25,24 @@ class Game implements GameInterface {
     }
 
     public function addRoll(int $pins) {
-        $previousFrame = $this->getPreviousFrameFromAllFrames();
-        $pinsRolledPreviousFrame = $this->getPinsRolledFromFrame($previousFrame);
-        $numRolls = count($pinsRolledPreviousFrame);
-        if ($numRolls === 2) {
-            return $this->createNewFrame($pins);
-        } else {
-            return $this->updatePreviousFrame($pins);
-        }
-    }
 
-    public function getFrames() {
+        $numFrames = count($this->allFrames);
+        if ($numFrames === 10) {
+            $this->updateFrame($pins);
+            $this->updateScoresStrikeAndSpare($pins);
+        }
+        if ($numFrames < 10) {
+            $this->playGame($pins);
+        }
         return $this->allFrames;
     }
 
-    public function calculateTotalScore() {
+    public function getFrames() {
+
+        return $this->allFrames;
+    }
+
+    public function getTotalScore() {
         $totalScore = 0;
 
         $numFrames = count($this->allFrames);
@@ -54,16 +57,31 @@ class Game implements GameInterface {
     public function isGameOver() {
         $numFrames = count($this->allFrames);
         if ($numFrames === 10) {
-            return true;
+            return $this->isLastFrameComplete();
         } else {
             return false;
         }
     }
-    
-    
 
-    private function getPreviousFrameFromAllFrames() {
-        return $this->allFrames[array_key_last($this->allFrames)];
+    private function playGame($pins) {
+        $frame = $this->getFrameInversed(0);
+        $pinsRolled = $this->getPinsRolledFromFrame($frame);
+        $numRolls = count($pinsRolled);
+        $numFrames = count($this->allFrames);
+
+        if ($numRolls === 2 || $pinsRolled === [10]) {
+            $this->createNewFrame($pins);
+            $this->updateScoresStrikeAndSpare($pins);
+        } else {
+            $this->updateFrame($pins);
+            if ($numFrames >= 2) {
+                $this->updateScoresStrikeAndSpare($pins);
+            }
+        }
+    }
+
+    private function getFrameInversed(int $i) {
+        return $this->allFrames[count($this->allFrames) - $i - 1];
     }
 
     private function getPinsRolledFromFrame(Frame $frame) {
@@ -71,26 +89,88 @@ class Game implements GameInterface {
     }
 
     private function createNewFrame($pins) {
-        $currentFrame = new Frame();
-        $currentFrame->setPinsRolled([$pins]);
-        $currentFrame->setScore($pins);
-        array_push($this->allFrames, $currentFrame);
+        $newFrame = new Frame();
+        $newFrame->setPinsRolled([$pins]);
+        $newFrame->setScore($pins);
+        array_push($this->allFrames, $newFrame);
 
         return $this->allFrames;
     }
 
-    private function updatePreviousFrame($pins) {
-        $previousFrame = $this->getPreviousFrameFromAllFrames();
+    private function updateFrame($pins) {
+        $frame = $this->getFrameInversed(0);
 
-        $pinsRolledPreviousFrame = $this->getPinsRolledFromFrame($previousFrame);
-        array_push($pinsRolledPreviousFrame, $pins);
-        $previousFrame->setPinsRolled($pinsRolledPreviousFrame);
-
-        $oldScore = $previousFrame->getScore();
-        $newScore = $oldScore + $pins;
-        $previousFrame->setScore($newScore);
+        $pinsRolledLastFrame = $this->getPinsRolledFromFrame($frame);
+        array_push($pinsRolledLastFrame, $pins);
+        $frame->setPinsRolled($pinsRolledLastFrame);
+        $this->updateScore($frame, $pins);
 
         return $this->allFrames;
+    }
+
+    private function updateScore($frame, $pins) {
+        $oldScore = $frame->getScore();
+        $newScore = $oldScore + $pins;
+        $frame->setScore($newScore);
+    }
+
+    private function updateScoresStrikeAndSpare($pins) {
+        $pinsRolledLastFrame = $this->getPinsRolledFromFrame($this->getFrameInversed(1));
+
+        if ($pinsRolledLastFrame[0] === 10) {
+
+            $this->updateScoreStrike($pins);
+        }
+        if (array_sum($pinsRolledLastFrame) === 10 &&
+                count($pinsRolledLastFrame) === 2) {
+            $this->updateScoreSpare($pins);
+        }
+    }
+
+    private function updateScoreStrike($pins) {
+        $pinsRolledCurrentFrame = $this->getPinsRolledFromFrame($this->getFrameInversed(0));
+        $lastFrame = $this->getFrameInversed(1);
+        $numFrames = count($this->allFrames);
+
+        if (count($pinsRolledCurrentFrame) < 3) {
+            $this->updateScore($lastFrame, $pins);
+        }
+        if ($numFrames >= 3) {
+            $this->updateScoreDoubleStrike($pins);
+        }
+    }
+
+    private function updateScoreDoubleStrike($pins) {
+        $pinsRolledCurrentFrame = $this->getPinsRolledFromFrame($this->getFrameInversed(0));
+        $pinsRolledSecondLastFrame = $this->getPinsRolledFromFrame($this->getFrameInversed(2));
+        $secondLastFrame = $this->getFrameInversed(2);
+        if ($pinsRolledSecondLastFrame[0] === 10 &&
+                count($pinsRolledCurrentFrame) === 1) {
+            $this->updateScore($secondLastFrame, $pins);
+        }
+    }
+
+    private function updateScoreSpare($pins) {
+        $lastFrame = $this->getFrameInversed(1);
+        $pinsRolledCurrentFrame = $this->getPinsRolledFromFrame($this->getFrameInversed(0));
+
+        if (count($pinsRolledCurrentFrame) === 1) {
+            $this->updateScore($lastFrame, $pins);
+        }
+    }
+
+    private function isLastFrameComplete() {
+        $frame = $this->getFrameInversed(0);
+        $pinsRolled = $this->getPinsRolledFromFrame($frame);
+
+        if (count($pinsRolled) < 2) {
+            return false;
+        } elseif (count($pinsRolled) === 2 &&
+                ($pinsRolled[0] === 10 || array_sum($pinsRolled) === 10)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }
