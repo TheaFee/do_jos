@@ -1,16 +1,30 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Gelöste Katas: 
+ * Roman: https://ccd-school.de/coding-dojo/function-katas/from-roman-numerals/
+ * Happy: https://ccd-school.de/coding-dojo/function-katas/froehliche-zahlen/
+ * RotatingEncryption: https://ccd-school.de/coding-dojo/function-katas/rot-13/
+ * Bowling: https://ccd-school.de/coding-dojo/class-katas/bowling/
+ * BoxPlot: https://ccd-school.de/coding-dojo/class-katas/box-plot/
  */
+spl_autoload_register(function ($class) {
+    include "src" . DIRECTORY_SEPARATOR . str_replace('\\', '/', $class) . ".php";
+});
+?>
 
-include('src/Roman/RomanToLatinNumbersConverter.php');
-include('src/Happy/HappyNumberCalculator.php');
-include('src/RotatingEncryption/RotatingEncryption.php');
-include('src/Bowling/GameInterface.php');
-include('src/Bowling/Game.php');
-include('src/Bowling/Frame.php');
-Bowling\Game::addRoll(4);
-Bowling\Game::addRoll(3);
+<html>
+    <body>
+        <h1>
+            Dies ist ein Test. Herzlich willkommen auf meiner Seite.
+        </h1>
+        <div>
+            <?php
+            include ("src/views/BoxPlot/BoxPlotForm.html");
+            $boxPlot = new \BoxPlot\BoxPlotController();
+            $boxPlot->createBoxPlot('src/BoxPlot/images/file.png', $_POST);
+            
+            ?>
+            <img src="src/BoxPlot/images/file.png" />
+        </div>
+    </body>
+</html>

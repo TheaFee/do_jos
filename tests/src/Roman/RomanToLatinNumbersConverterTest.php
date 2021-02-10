@@ -12,7 +12,10 @@ use PHPUnit\Framework\TestCase;
 
 final class RomanToLatinNumbersConverterTest extends TestCase {
 
-    function setUp(): void {
+    private \Roman\RomanToLatinNumbersConverter $numbersConverter;
+
+    protected function setUp(): void {
+        parent::setUp();
         $this->numbersConverter = new \Roman\RomanToLatinNumbersConverter();
     }
 
@@ -29,15 +32,20 @@ final class RomanToLatinNumbersConverterTest extends TestCase {
     public function testCalculate() {
         $latinNumbers = [100, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
         $result = 1443;
+        $mock = new \Roman\RomanToLatinNumbersConverter();
+        $property = $this->getLatinNumbersArray($mock);
+        $property->setValue($mock, $latinNumbers);
 
-        $this->assertSame($result, $this->numbersConverter->calculate($latinNumbers));
+        $this->assertEquals($result, $mock->calculate());
     }
 
     public function testCalculate_Fail() {
-        $validSemantic = false;
         $latinNumbers = [10, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
+        $mock = new \Roman\RomanToLatinNumbersConverter();
+        $property = $this->getLatinNumbersArray($mock);
+        $property->setValue($mock, $latinNumbers);
 
-        $this->assertFalse($this->numbersConverter->calculate($latinNumbers));
+        $this->assertFalse($this->numbersConverter->calculate());
     }
 
     public function testGetValidRomanNumber() {
@@ -49,7 +57,6 @@ final class RomanToLatinNumbersConverterTest extends TestCase {
         $letter = "C";
 
         $this->assertSame("C", $this->numbersConverter->getValidRomanLetter($letter));
-
     }
 
     public function testValidateRomanNumber_Null() {
@@ -58,28 +65,56 @@ final class RomanToLatinNumbersConverterTest extends TestCase {
         $this->assertNull($this->numbersConverter->getValidRomanLetter($letter));
     }
 
-    public function testSwitchToLatinNumber() {
+    public function testSwitchToLatinNumbers() {
         $validRomanNumber = "DXCXLIXIV";
-        $result = [500, 10, 100, 10, 50, 1, 10, 1, 5];
-        $this->assertSame($result, $this->numbersConverter->switchToLatinNumbers($validRomanNumber));
+        $latinNumbersArray = [];
+
+        $mock = new \Roman\RomanToLatinNumbersConverter();
+        $property = $this->getLatinNumbersArray($mock);
+        $property->setValue($mock, $latinNumbersArray);
+
+        $mock->switchToLatinNumbers($validRomanNumber);
+        $actual = $property->getValue($mock);
+
+        $expected = [500, 10, 100, 10, 50, 1, 10, 1, 5];
+        $this->assertEquals($expected, $actual);
     }
 
     public function testIsSemanticValid_True() {
         $latinNumberArray = [100, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
+        $mock = new \Roman\RomanToLatinNumbersConverter();
+        $property = $this->getLatinNumbersArray($mock);
+        $property->setValue($mock, $latinNumberArray);
 
-        $this->assertTrue($this->numbersConverter->isSemanticValid($latinNumberArray));
+        $this->assertTrue($mock->isSemanticValid());
     }
 
     public function testIsSemanticValid_False() {
-        $latinNumbers = [10, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
+        $latinNumberArray = [10, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
+        $mock = new \Roman\RomanToLatinNumbersConverter();
+        $property = $this->getLatinNumbersArray($mock);
+        $property->setValue($mock, $latinNumberArray);
 
-        $this->assertFalse($this->numbersConverter->isSemanticValid($latinNumbers));
+        $this->assertFalse($mock->isSemanticValid());
     }
 
     public function testPerformSubstractionRule() {
-        $latinNumbers = [100, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
+        $latinNumberArray = [100, 1000, 100, 500, 10, 100, 10, 50, 1, 10, 1, 5];
         $result = 1443;
-        $this->assertSame($result, $this->numbersConverter->performSubstractionRule($latinNumbers));
+        $mock = new \Roman\RomanToLatinNumbersConverter();
+        $property = $this->getLatinNumbersArray($mock);
+        $property->setValue($mock, $latinNumberArray);
+        
+        $this->assertSame($result, $mock->performSubstractionRule());
+    }
+
+    private function getLatinNumbersArray($mock) {
+
+        $reflector = new ReflectionClass($mock);
+        $property = $reflector->getProperty('latinNumbersArray');
+        $property->setAccessible(true);
+        
+        return $property;
     }
 
 }

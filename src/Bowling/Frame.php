@@ -15,8 +15,8 @@ namespace Bowling;
  */
 class Frame {
 
-    private array $pinsRolled;
-    private int $score;
+    private $pinsRolled;
+    private $score;
 
     public function __construct() {
         $this->pinsRolled = array();

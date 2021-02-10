@@ -4,7 +4,11 @@ namespace Roman;
 
 class RomanToLatinNumbersConverter {
 
-    private array $latinNumbersArray;
+    private  $latinNumbersArray;
+
+    public function __construct() {
+        $this->latinNumbersArray = array();
+    }
 
     public function convertToLatinNumber(string $roman) {
         $validNumber = $this->getValidNumber($roman);
@@ -34,7 +38,6 @@ class RomanToLatinNumbersConverter {
         return $validNumber;
     }
 
-
     public function getValidRomanLetter(string $letter) {
 
         $letterMatched = preg_match('/[MDCLXVI]/', $letter);
@@ -44,6 +47,8 @@ class RomanToLatinNumbersConverter {
     }
 
     public function switchToLatinNumbers(string $validNumber) {
+
+        echo $validNumber;
         for ($i = 0; $i < strlen($validNumber); $i++) {
             $letter = substr($validNumber, $i, 1);
             switch ($letter) {
@@ -68,10 +73,10 @@ class RomanToLatinNumbersConverter {
                 case $letter === "M":
                     $latinNumber = 1000;
             }
-
+            echo $latinNumber;
             array_push($this->latinNumbersArray, $latinNumber);
+            print_r($this->latinNumbersArray);
         }
-
     }
 
     public function isSemanticValid() {

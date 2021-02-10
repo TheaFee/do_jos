@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            <div id="form_container">
+
+                <form id="form_15277" class="appnitro"  method="post" action="">
+                    <div class="form_description">
+                        <h2>Erstelle ein BoxPlot</h2>
+                        <p>Mit Hilfe eines BoxPlots kannst du dir schnell einen Überblick über eine Zahlenreihen verschaffen.</p>
+                    </div>						
+                    <ul >
+
+                        <li id="chartTitle" >
+                            <label class="description" for="chartTitle">Bitte Titel des Charts eingeben </label>
+                            <div>
+                                <input id="chartTitle" name="chartTitle" class="element text medium" type="text" maxlength="255" value="<?= (isset($_POST['chartTitle'])) ? $_POST['chartTitle'] : 'Box Plot';?>"/> 
+                            </div> 
+                        </li>		<li id="array" >
+                            <label class="description" for="array">Ẑahlenreihe Eintragen </label>
+                            <div>
+                                <input id="array" name="array" required class="element text large" type="text" maxlength="255" value="<?= (isset($_POST['array'])) ? $_POST['array'] : '';?>" /> 
+                            </div><p class="guidelines" id="guide_1"><small> Zahlen mit Komma (,) separiert eintragen.</small></p> 
+                        </li>		<li id="chartWidth" >
+                            <label class="description" for="chartWidth">Breite Chart </label>
+                            <div>
+                                <input id="chartWidth" name="chartWidth" class="element text small" type="text" maxlength="255" value="<?= (isset($_POST['chartWidth'])) ? $_POST['chartWidth'] : 300;?>"/> 
+                            </div> 
+                        </li>		<li id="chartHeight" >
+                            <label class="description" for="chartHeight">Höhe Chart </label>
+                            <div>
+                                <input id="chartHeight" name="chartHeight" class="element text small" type="text" maxlength="255" value="<?= (isset($_POST['chartHeight'])) ? $_POST['chartHeight'] : 200;?>"/> 
+                            </div> 
+                        </li>		<li id="barWidth" >
+                            <label class="description" for="barWidth">Breite Balken </label>
+                            <div>
+                                <input id="barWidth" name="barWidth" class="element text small" type="text" maxlength="255" value="<?= (isset($_POST['barWidth'])) ? $_POST['barWidth'] : 20;?>"/> 
+                            </div><p class="guidelines" id="guide_4"><small>Hier kannst du einstellen, wie breit der Balken des Box Plot ist.</small></p> 
+                       <!--  </li>		<li id="chartOrientation" >
+                           <label class="description" for="chartOrientation">Chart-Ausrichtung </label>
+                            <span>
+                                <input id="chartOrientation_horizontal" name="chartOrientation" class="element radio" type="radio" value="1" />
+                                <label class="choice" for="chartOrientation_horizontal">Horizontal</label>
+                                <input id="chartOrientation_vertical" name="chartOrientation" class="element radio" type="radio" value="2" />
+                                <label class="choice" for="chartOrientation_vertical">Vertical</label>
+
+                            </span> 
+                        </li> -->
+
+                        <li class="buttons">
+                            <input type="hidden" name="form_id" value="15277" />
+
+                            <input id="saveForm" class="button_text" type="submit" name="submit" value="Submit" />
+                        </li>
+                    </ul>
+                </form>	
+
+            </div>
+
+        </div>
+    </body>
+</html>
