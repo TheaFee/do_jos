@@ -50,7 +50,6 @@ class Game implements GameInterface {
             $score = $this->allFrames[$i]->getScore();
             $totalScore += $score;
         }
-
         return $totalScore;
     }
 
@@ -168,9 +167,8 @@ class Game implements GameInterface {
         } elseif (count($pinsRolled) === 2 &&
                 ($pinsRolled[0] === 10 || array_sum($pinsRolled) === 10)) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
 }

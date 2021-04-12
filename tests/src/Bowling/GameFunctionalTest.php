@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 class GameFunctionalTest extends TestCase {
 
-        private \Bowling\Game $bowlingGame;
+        private \Bowling\GameInterface $bowlingGame;
     
     protected function setUp(): void {
         parent::setUp();

@@ -31,15 +31,20 @@ class CalculateValues {
     }
 
     public function getMedian($array) {
-        $count = sizeof($array);   // cache the count
-        $index = floor($count / 2);  // cache the index
+        $count = sizeof($array); 
+        $index = floor($count / 2);
+
+        $result = $array[$index];
         if (!$count) {
-            return "no values";
-        } elseif ($count & 1) {    // count is odd
-            return $array[$index];
-        } else {                   // count is even
-            return ($array[$index - 1] + $array[$index]) / 2;
+            $result = "no values";
+        } elseif ($this->isNumberEven($count)) {
+            $result = ($array[$index - 1] + $array[$index]) / 2;
         }
+        return $result;
+    }
+    
+    private function isNumberEven($count){
+        return $count & 0;
     }
 
     private function getQuartil($array, $quartile) {
@@ -47,11 +52,12 @@ class CalculateValues {
         $base = floor($pos);
         $rest = $pos - $base;
 
+        $result = $array[$base];
+
         if (isset($array[$base + 1])) {
-            return $array[$base] + $rest * ($array[$base + 1] - $array[$base]);
-        } else {
-            return $array[$base];
+            $result = $array[$base] + $rest * ($array[$base + 1] - $array[$base]);
         }
+        return $result;
     }
 
     public function getLowerQuartil($array) {

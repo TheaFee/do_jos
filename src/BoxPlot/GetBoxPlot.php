@@ -1,6 +1,7 @@
 <?php
 
 namespace BoxPlot;
+
 require_once('./libraries/jpgraph-4.3.4/src/jpgraph.php');
 require_once ('./libraries/jpgraph-4.3.4/src/jpgraph_line.php');
 require_once ('./libraries/jpgraph-4.3.4/src/jpgraph_stock.php');
@@ -34,7 +35,7 @@ class GetBoxPlot {
 // Width of the bars (in pixels)
         $plot->SetWidth($barWidth);
 // Uncomment the following line to hide the horizontal end lines
-       // $plot->HideEndLines();
+        // $plot->HideEndLines();
 // Add the plot to the graph and send it back to the browser
         $graph->Add($plot);
 

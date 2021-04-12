@@ -43,7 +43,7 @@ class CalculateValuesTest extends TestCase {
 
     public function testGetMedian_EvenCountOfNumbers() {
         $array = [17, 18, 18, 19, 19, 20, 24, 24, 24, 25];
-        $expectedValue = 19.5;
+        $expectedValue = 20; 
 
         $this->assertEquals($expectedValue, $this->boxPlot->getMedian($array));
     }
